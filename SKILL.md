@@ -48,22 +48,22 @@ Verificar o campo `board_stage_name` retornado pelo `tasks_get`:
 
 ### 4. Verificar/criar branch
 
-Convenção de nome: `task-{ID}` (ex: `task-68207`)
+Convenção de nome: `{ID}` (ex: `68207`)
 
 ```bash
 # Verifica se branch remota ou local existe
 git fetch origin
-git branch -a | grep "task-{ID}"
+git branch -a | grep "{ID}"
 ```
 
-- **Existe localmente:** `git checkout task-{ID}`
-- **Existe no remote:** `git checkout -b task-{ID} origin/task-{ID}`
+- **Existe localmente:** `git checkout {ID}`
+- **Existe no remote:** `git checkout -b {ID} origin/{ID}`
 - **Não existe:** Atualize a branch principal antes de criar a nova:
   ```bash
   # Substitua 'master' por 'main' se necessário
   git checkout master
   git pull origin master
-  git checkout -b task-{ID}
+  git checkout -b {ID}
   ```
 
 ### 5. Pausar timer
@@ -114,7 +114,7 @@ EOF
 ### 4. Push na branch e capturar hash
 
 ```bash
-git push origin task-{ID} && git log -1 --format="%H"
+git push origin {ID} && git log -1 --format="%H"
 ```
 
 ### 5. Montar URL do commit
@@ -126,81 +126,141 @@ git remote get-url origin
 
 ### 6. Comentário de entrega no card
 
+Escolher o template conforme a natureza da demanda, usando o `board_stage_name` do card como critério:
+
+- **"08 - A fazer/Fazendo Back"** → template **BACK-END**
+- **"10 - A fazer/fazendo Front"** → template **FRONT-END**
+- **Demanda que tocou os dois lados** → postar os dois comentários (back-end primeiro)
+
+Os textos de orientação ("Descreva de forma objetiva...") e os blocos "Exemplo:" são guia de preenchimento — **não** devem ir no comentário final. Seções sem conteúdo recebem explicitamente "Não aplicável" ou "Nenhum ponto de atenção".
+
+#### Template BACK-END
+
 ```
-# Notas Técnicas da Implementação (DEV)
+ENTREGA DA DEMANDA — BACK-END
 
----
+1. Demanda identificada
+Descreva de forma objetiva o que foi solicitado e qual problema a demanda deve resolver.
+Exemplo:
+O cliente necessita de um CRUD para gerenciamento de produtos que serão exibidos no Marketplace da Plamev.
 
-## 1. Resumo da Implementação
+2. O que foi realizado
+Descreva de forma objetiva tudo que foi implementado no Back-end.
+Exemplo:
+Foi desenvolvido o CRUD para gerenciamento dos produtos do Marketplace, contemplando:
 
-<Breve descrição do que foi implementado/corrigido e qual regra/comportamento foi alterado.>
+* Listagem;
+* Cadastro;
+* Edição;
+* Exclusão;
+* Validações necessárias;
+* Regras de negócio relacionadas à funcionalidade.
 
----
+3. Endpoints / Rotas criadas ou alteradas
+Informe os endpoints envolvidos na implementação.
+Exemplo:
 
-## 2. Mudanças Realizadas
+* `GET /produtos`
+* `GET /produtos/:id`
+* `POST /produtos`
+* `PUT /produtos/:id`
+* `DELETE /produtos/:id`
 
-- <Arquivo/serviço/método alterado e o que foi feito>
-- <Arquivo/serviço/método alterado e o que foi feito>
-- <...>
+Caso nenhum endpoint tenha sido criado ou alterado, informar:
+Não aplicável.
 
----
+4. Banco de dados
+Informe todas as alterações realizadas no banco de dados.
+Exemplo:
 
-## 3. Detalhamento Técnico
+* Tabelas criadas/alteradas: `Produtos`
+* Colunas adicionadas/alteradas: `Destaque`, `Ordem`
+* Índices adicionados: Nenhum
+* Foreign Keys adicionadas: Nenhuma
+* Views alteradas: Nenhuma
+* Procedures/Functions alteradas: Nenhuma
+* Migration/Script: `xxxx.sql`
 
-### 3.1 Arquivos/Classes Alterados
+Caso não exista alteração:
+Nenhuma alteração realizada no banco de dados.
 
-- `<caminho/Arquivo.ext>`
-- `<caminho/Arquivo.ext>`
+5. Arquivos criados ou alterados
+Informe os arquivos impactados pela implementação.
+Exemplo:
 
-### 3.2 Fluxo Alterado
+* `Controllers/ProdutosController.php`
+* `Models/Produtos.php`
+* `Services/ProdutosService.php`
+* `Routes/produtos.php`
 
-**Antes:**
-1. <Passo 1 do fluxo anterior>
-2. <Passo 2 do fluxo anterior>
+6. Link do commit
+Informe o commit relacionado à implementação.
+`LINK_DO_COMMIT`
 
-**Agora:**
-1. <Passo 1 do novo fluxo>
-2. <Passo 2 do novo fluxo>
+7. Pontos de atenção
+Informe configurações, dependências, scripts ou qualquer informação necessária para homologação/deploy.
+Caso não exista:
+Nenhum ponto de atenção.
 
-### 3.3 Justificativa Técnica
+8. Status da entrega
+Status: ✅ Concluído
+Pronto para QA/Homologação: ✅ Sim
+```
 
-<Por que esta abordagem foi escolhida. Decisões de design, trade-offs, padrões seguidos.>
+#### Template FRONT-END
 
----
+```
+ENTREGA DA DEMANDA — FRONT-END
 
-## 4. Impactos
+1. Demanda identificada
+Descreva de forma objetiva o que foi solicitado e qual problema a demanda deve resolver.
+Exemplo:
+O cliente necessita de uma interface para gerenciamento dos produtos exibidos como destaque no Marketplace da Plamev.
 
-- <Impacto 1 no sistema/usuário>
-- <Impacto 2 em integrações ou outros módulos>
+2. O que foi realizado
+Descreva de forma objetiva tudo que foi implementado no Front-end.
+Exemplo:
+Foi criada a interface para gerenciamento dos produtos do Marketplace, contemplando:
 
----
+* Listagem dos produtos;
+* Cadastro;
+* Edição;
+* Exclusão;
+* Validação dos campos;
+* Feedback das operações realizadas pelo usuário.
 
-## 5. Riscos e Considerações
+3. Páginas / Rotas criadas ou alteradas
+Informe as páginas ou rotas impactadas.
+Exemplo:
 
-- <Risco ou ponto de atenção 1>
-- <Risco ou ponto de atenção 2>
+* `/produtos`
+* `/produtos/cadastro`
+* `/produtos/:id/editar`
 
----
+Caso nenhuma rota tenha sido criada ou alterada:
+Não aplicável.
 
-## 6. Instruções para QA
+4. Arquivos criados ou alterados
+Informe os arquivos impactados pela implementação.
+Exemplo:
 
-- Testar <cenário 1>: deve <comportamento esperado>.
-- Testar <cenário 2>: deve <comportamento esperado>.
-- <...>
+* `pages/produtos/index.tsx`
+* `pages/produtos/cadastro.tsx`
+* `components/ProdutoForm.tsx`
+* `services/produtos.ts`
 
----
+5. Link do commit
+Informe o commit relacionado à implementação.
+`LINK_DO_COMMIT`
 
-## 7. Feature Flags / Configurações
+6. Pontos de atenção
+Informe configurações, dependências ou qualquer informação necessária para homologação/deploy.
+Caso não exista:
+Nenhum ponto de atenção.
 
-- <Flag criada ou "Nenhuma flag criada.">
-- <Dependência de ambiente ou "Não há dependências de ambiente.">
-
----
-
-## 8. Referências
-
-- **Branch:** task-{ID}
-- **Commit:** https://bitbucket.org/ORG/REPO/commits/HASH
+7. Status da entrega
+Status: ✅ Concluído
+Pronto para QA/Homologação: ✅ Sim
 ```
 
 ### 7. Verificar esteira e mover se necessário
@@ -238,8 +298,8 @@ git pull origin dev
 ### 2. Merge da branch da demanda
 
 ```bash
-git merge task-{ID} --no-ff -m "$(cat <<'EOF'
-Merge task-{ID}: <título resumido da demanda>
+git merge {ID} --no-ff -m "$(cat <<'EOF'
+Merge {ID}: <título resumido da demanda>
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 EOF
@@ -267,7 +327,7 @@ Verificar o campo `board_stage_name` atual do card via `tasks_get`:
 ```
 🚀 *Deploy em homologação*
 
-**Branch mergeada:** task-{ID} → dev
+**Branch mergeada:** {ID} → dev
 **Commit:** https://bitbucket.org/ORG/REPO/commits/HASH
 
 JSON TESTER:
@@ -308,8 +368,8 @@ git pull origin master
 ### 2. Merge da branch da demanda
 
 ```bash
-git merge task-{ID} --no-ff -m "$(cat <<'EOF'
-Merge task-{ID}: <título resumido da demanda>
+git merge {ID} --no-ff -m "$(cat <<'EOF'
+Merge {ID}: <título resumido da demanda>
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 EOF
@@ -336,7 +396,7 @@ Verificar o campo `board_stage_name` atual do card via `tasks_get`:
 ```
 🚀 *Deploy em produção*
 
-**Branch mergeada:** task-{ID} → master
+**Branch mergeada:** {ID} → master
 **Commit:** https://bitbucket.org/ORG/REPO/commits/HASH
 ```
 
@@ -355,11 +415,11 @@ Verificar via `tasks_get` se o campo `is_working_on` indica que o usuário atual
 |-------|-----------|
 | Buscar tarefa | `tasks_get` + `tasks_get_description` (paralelo) |
 | Verificar branch | `git fetch origin` + `git branch -a` |
-| Criar/trocar branch | `git checkout -b task-{ID}` |
+| Criar/trocar branch | `git checkout -b {ID}` |
 | Ver mudanças | `git status` + `git diff` |
 | Commit | `git add <arquivo>` + `git commit` |
-| Push branch | `git push origin task-{ID}` |
-| Merge master | `git checkout master` + `git merge task-{ID} --no-ff` |
+| Push branch | `git push origin {ID}` |
+| Merge master | `git checkout master` + `git merge {ID} --no-ff` |
 | Push master | `git push origin master` |
 | URL commit | `git remote get-url origin` → HTTPS |
 | Comentários | `tasks_comments_create` (técnico + cliente) |
@@ -374,9 +434,11 @@ Verificar via `tasks_get` se o campo `is_working_on` indica que o usuário atual
 ## Common Mistakes
 
 - **Commitar arquivos não relacionados** — sempre verificar `git diff` antes de `git add`
-- **Push na master direto sem branch** — sempre trabalhar na branch `task-{ID}` até subir para produção
+- **Push na master direto sem branch** — sempre trabalhar na branch `{ID}` até subir para produção
 - **Merge sem `--no-ff`** — usar `--no-ff` para preservar histórico da branch no merge
 - **Esquecer de capturar hash** — `git push && git log -1 --format="%H"` em um comando só
 - **URL errada do commit** — converter `git@bitbucket.org:ORG/REPO.git` → `https://bitbucket.org/ORG/REPO/commits/HASH`
+- **Template de entrega errado** — conferir o `board_stage_name` antes de montar o comentário: Back → template BACK-END, Front → template FRONT-END
+- **Deixar seção do template em branco** — preencher com "Não aplicável" / "Nenhum ponto de atenção" quando não houver conteúdo
 - **Comentário cliente técnico demais** — linguagem simples, focar no benefício e em como usar
 - **Mover esteira sem verificar ID** — sempre usar `tasks_list` + grep para confirmar o `board_stage_id`
