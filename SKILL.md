@@ -260,7 +260,6 @@ Nenhum ponto de atenção.
 
 7. Status da entrega
 Status: ✅ Concluído
-Pronto para QA/Homologação: ✅ Sim
 ```
 
 ### 7. Verificar esteira e mover se necessário
